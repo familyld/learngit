@@ -27,3 +27,41 @@ Git是Linux的开发者Linus开发的~ 在此之前其实已经存在CVS和SVN�
 
 实际中一般也很少两个人之间推送，因为双方可能不在同一局域网或者不同时在线。所以一般还是会有一台充当“中央服务器”的电脑，这个中央服务器仅用来方便大家修改，即使坏了，大家电脑中也有自己的版本库，不影响工作。除了这个优势，Git还拥有极其强大的分支管理，后面再谈及这一点。
 
+##创建版本库
+
+版本库也叫**仓库(repository)**，可以简单理解成一个目录，这个目录里面的所有文件都可以被Git管理起来，每个文件的修改、删除，Git都能跟踪，以便任何时刻都可以追踪历史，或者在将来某个时刻可以“还原”。
+
+创建版本库很简单，先找好地方创建空目录：
+
+    $ mkdir learngit
+    $ cd learngit
+    $ pwd
+    /home/lincoln/learngit
+
+pwd命令用于linux中获取当前目录。
+
+第二步是通过 `git init` 把这个目录变为Git可以管理的仓库：
+
+    $ git init
+    初始化空的 Git 版本库于 /home/lincoln/learngit/.git/
+
+这时原本的空目录下就会多出一个 `.git` 目录了，这会是Git用来跟踪管理版本库的，**千万不要手动修改里面的文件**。如果没看到这个目录是因为系统默认隐藏了，可以通过 `ls -ah` 命令查看。
+
+注意**任何版本控制系统，只能跟踪文本文件的改动**。对于文本文件，版本控制系统可以告诉你每次的改动，比如在第5行加了一个单词“Linux”，在第8行删了一个单词“Windows”。 而图片视频等二进制文件是无法进行版本控制的，只能知道文件大小的变化。(Word也是二进制格式，无法进行版本控制，所以**文本文件应当用纯文本方式编写**)。
+
+现在**在该目录下**(仓库内)编写一个readme文件，然后使用Git把它添加到仓库。这需要两步：
+
+    lincoln@ubuntu:~/learngit$ git add readme.md
+    lincoln@ubuntu:~/learngit$ git commit -m "wrote a readme file"
+    [master （根提交） 85e8aa4] wrote a readme file
+     1 file changed, 5 insertions(+)
+     create mode 100644 readme.md
+
+这里 `git commit` 命令中 `-m` 参数后接的是本次提交的说明，可以写一下这次提交做了什么改动，这样对自己还是对合作的同事都有好处。
+
+`git commit` 命令执行成功后会告诉你，多少个文件被改动，插入了多少行内容。commit是可以一次提交多个文件的，只要这些文件已经add到目录里：
+
+    $ git add file1.txt
+    $ git add file2.txt file3.txt
+    $ git commit -m "add 3 files."
+
