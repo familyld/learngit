@@ -120,3 +120,88 @@ pwd命令用于linux中获取当前目录。
 
 提交后再查看仓库的状态，此时工作目录是干净的~直到发生下次更改。
 
+###版本回退
+
+学会查看修改之后，这次再做一次修改，(把second改成third)，然后提交。
+
+    lincoln@ubuntu:~/learngit$ git add readme.md 
+    lincoln@ubuntu:~/learngit$ git commit -m "third try"
+    [master c161f68] third try
+     1 file changed, 1 insertion(+), 1 deletion(-)
+
+像这样我们可以不断更改不断提交，每次提交就相当于保存了一个快照。如果把文件改乱了或者误删了，可以从最近一个commit恢复。
+
+回顾一下我们的修改，可以用 `git log`  命令查看：
+
+    lincoln@ubuntu:~/learngit$ git log
+    commit c161f68f94bfc677cc1d4732377ba316a2295c50
+    Author: familyld <family_ld@foxmail.com>
+    Date:   Tue Mar 29 14:11:07 2016 +0800
+    
+        third try
+    
+    commit 7a56abcd1e56260bbe0ef2d15c2e19f419abd1bb
+    Author: familyld <family_ld@foxmail.com>
+    Date:   Tue Mar 29 13:27:18 2016 +0800
+    
+        second try
+    
+    commit 85e8aa449ba1868259a259f8083d015c3f37941b
+    Author: familyld <family_ld@foxmail.com>
+    Date:   Mon Mar 28 00:18:09 2016 +0800
+    
+        wrote a readme file
+    
+`git log` 命令会显示从最近到最远的提交日志，我们可以通过commit时的注释来清楚看到自己做了什么修改(所以一定要写好，像这里的就是写得不好的例子hahaha)。
+
+如果觉得输出太多，还可以用简易的版本：
+    
+    lincoln@ubuntu:~/learngit$ git log --pretty=oneline
+    c161f68f94bfc677cc1d4732377ba316a2295c50 third try
+    7a56abcd1e56260bbe0ef2d15c2e19f419abd1bb second try
+    85e8aa449ba1868259a259f8083d015c3f37941b wrote a readme file
+
+加上 `--pretty=oneline` 参数后，每个提交只显示一行，前面的字符串是**commit id(版本号)**。
+
+如果写错了想回到上一个版本怎么办呢？我们可以用 `git reset` 来实现：
+
+    lincoln@ubuntu:~/learngit$ git reset --hard HEAD^
+    HEAD 现在位于 7a56abc second try
+
+通过参数 `hard` 来定位要回滚到什么版本，当前版本是 `HEAD`，所以如果跟的是 `HEAD`，将不会有任何变化。 而 `HEAD^` 表示的则是回滚到上一个版本，可以看到这里滚回到了第二次修改的状态。
+
+    lincoln@ubuntu:~/learngit$ git log --pretty=oneline
+    7a56abcd1e56260bbe0ef2d15c2e19f419abd1bb second try
+    85e8aa449ba1868259a259f8083d015c3f37941b wrote a readme file
+
+这时再查看 `git log`，显然最新那次修改已经没有了。 咦，那我们既然能回到过去，能不能回到未来呢？这是可以的！不过稍微麻烦一些~
+
+    lincoln@ubuntu:~/learngit$ git reset --hard c161f68
+    HEAD 现在位于 c161f68 third try
+    lincoln@ubuntu:~/learngit$ git log --pretty=oneline
+    c161f68f94bfc677cc1d4732377ba316a2295c50 third try
+    7a56abcd1e56260bbe0ef2d15c2e19f419abd1bb second try
+    85e8aa449ba1868259a259f8083d015c3f37941b wrote a readme file
+
+如果我们要“回到未来”，很重要的一点是要记住版本号！我们可以通过给 `hard` 参数指定未来的位置，然后顺利地回去。而且不需要输入完整的版本号，输入前面一部分，能和其他版本区分开就可以了。
+
+Git版本回退的速度非常快，实际内部有一个指向当前版本的 `HEAD` 指针，回退时Git仅仅是改变了指针指向的位置。
+
+然而..万一吃错药了，电脑关机了第二天打开找不到版本号了怎么回到未来呢？ 英雄莫慌！ Git大法师还有一招：
+
+    lincoln@ubuntu:~/learngit$ git reflog
+    7a56abc HEAD@{0}: reset: moving to HEAD^
+    c161f68 HEAD@{1}: commit: third try
+    7a56abc HEAD@{2}: commit: second try
+    85e8aa4 HEAD@{3}: commit (initial): wrote a readme file
+
+`git reflog` 记录着我们每一次的命令， 可以看到我们之前commit第三次修改时的版本号 `c161f68`，于是我们又可以轻松地坐着时光机回到未来了~~
+
+####小结
+
+- `HEAD` 指向的版本就是当前版本，因此，Git允许我们在版本的历史之间穿梭，使用命令 `git reset --hard commit_id`。
+
+- 穿梭前，用 `git log` 可以查看提交历史，以便确定要回退到哪个版本。
+
+- 要重返未来，用 `git reflog` 查看命令历史，以便确定要回到未来的哪个版本。
+
