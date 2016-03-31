@@ -65,3 +65,58 @@ pwd命令用于linux中获取当前目录。
     $ git add file2.txt file3.txt
     $ git commit -m "add 3 files."
 
+##时光机穿梭
+
+在提交readme成功后，再次进行修改，然后可以通过 `git status` 查看结果：
+
+    lincoln@ubuntu:~/learngit$ git status
+    位于分支 master
+    尚未暂存以备提交的变更：
+      （使用 "git add <file>..." 更新要提交的内容）
+      （使用 "git checkout -- <file>..." 丢弃工作区的改动）
+    
+    	修改: readme.md
+    
+    修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+
+`git status` 命令可以让我们时刻掌握仓库当前的状态，上面的命令告诉我们，readme.md被修改过了，但还没有提交的修改。
+
+如果隔了一段时间，不记得上一次修改了什么内容，可以通过 `git diff` 命令来查看：
+
+    lincoln@ubuntu:~/learngit$ git diff
+    diff --git a/readme.md b/readme.md
+    index d9cd201..85d8a04 100644
+    --- a/readme.md
+    +++ b/readme.md
+    @@ -1,5 +1,5 @@
+     Git is a version control system.
+     Git is free software.
+    -This is my first time using Git.
+    +This is my second time using Git.
+     I'm a little nervous. 
+     ..........lol...........
+    \ No newline at end of file
+
+这里显示的格式正是Unix通用的diff格式，可以从上面的命令输出看到，这次修改是修改了第3行，把单词first换成了second。
+
+了解了修改的内容后就可以放心地提交到仓库了，这和提交新闻奖是一样的，分add和commit两步：
+
+    lincoln@ubuntu:~/learngit$ git add readme.md 
+    lincoln@ubuntu:~/learngit$ git status
+    位于分支 master
+    要提交的变更：
+      （使用 "git reset HEAD <file>..." 撤出暂存区）
+    
+    	修改: readme.md
+
+可以看到add之后，仓库的状态与add之前有了变化，修改以及加入到目录(工作区)中。
+
+    lincoln@ubuntu:~/learngit$ git commit -m "second try"
+    [master 7a56abc] second try
+     1 file changed, 1 insertion(+), 1 deletion(-)
+    lincoln@ubuntu:~/learngit$ git status
+    位于分支 master
+    无文件要提交，干净的工作区
+
+提交后再查看仓库的状态，此时工作目录是干净的~直到发生下次更改。
+
