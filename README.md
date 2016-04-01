@@ -227,13 +227,13 @@ Git和其他版本控制系统如SVN的一个不同之处就是有暂存区的�
 
 工作区其实顾名思义就是我们工作的地方，就是我们存储文件的本地目录，比如这个git项目中learngit文件夹就是一个工作区。
 
-[工作区](http://www.liaoxuefeng.com/files/attachments/0013849082162373cc083b22a2049c4a47408722a61a770000/0)
+![工作区](http://www.liaoxuefeng.com/files/attachments/0013849082162373cc083b22a2049c4a47408722a61a770000/0)
 
 ***版本库(Repository)***
 
 前面“创建版本库”一节中已经提到了这个概念，在工作区下有一个隐藏目录 `.git`，这个隐藏目录其实就是Git的版本库。
 
-[版本库](http://www.liaoxuefeng.com/files/attachments/001384907702917346729e9afbf4127b6dfbae9207af016000/0)
+![版本库](http://www.liaoxuefeng.com/files/attachments/001384907702917346729e9afbf4127b6dfbae9207af016000/0)
 
 Git的版本库中保存了很多信息，上图显示的是我们的工作流程，可以看到add命令发出后，文件被放入到版本库的**stage区域**，这个区域也称**暂存区**， 或者**index区域**。 
 
@@ -253,15 +253,6 @@ Git的版本库中保存了很多信息，上图显示的是我们的工作流�
 
 ```
 lincoln@ubuntu:~/learngit$ git status
-位于分支 master
-您的分支领先 'origin/master' 共 1 个提交。
-  （使用 "git push" 来发布您的本地提交）
-
-要提交的变更：
-  （使用 "git reset HEAD <file>..." 撤出暂存区）
-
-    修改:         README.md
-
 尚未暂存以备提交的变更：
   （使用 "git add <file>..." 更新要提交的内容）
   （使用 "git checkout -- <file>..." 丢弃工作区的改动）
@@ -274,3 +265,26 @@ lincoln@ubuntu:~/learngit$ git status
     LICENSE
 
 ```
+
+可以看到因为README文件修改了，Git会提醒我们**变更尚未暂存**(没有add到暂存区)，而LICENSE文件因为是一个新的文件，从未被add过，所以状态是**未跟踪的**。
+
+接下来就把它们都add到暂存区，然后再次查看状态：
+
+```
+lincoln@ubuntu:~/learngit$ git status
+位于分支 master
+
+要提交的变更：
+  （使用 "git reset HEAD <file>..." 撤出暂存区）
+
+    新文件:       LICENSE
+    修改:         README.md
+
+```
+
+这时变动都已经放入版本库的暂存区了，如下图：
+
+![暂存区](http://www.liaoxuefeng.com/files/attachments/001384907720458e56751df1c474485b697575073c40ae9000/0)
+
+最后执行 `git commit` 就可以一次性把暂存区的所有修改提交到分支了。
+
