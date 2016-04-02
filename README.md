@@ -311,3 +311,41 @@ lincoln@ubuntu:~/learngit$ git status
 
 不妨做个实验：
 
+```
+lincoln@ubuntu:~/learngit$ git add README.md 
+lincoln@ubuntu:~/learngit$ git status
+位于分支 master
+您的分支与上游分支 'origin/master' 一致。
+
+要提交的变更：
+  （使用 "git reset HEAD <file>..." 撤出暂存区）
+
+    修改:         README.md
+
+```
+
+第一次修改后把文件add到暂存区，然后进行第二次修改，再调用commit提交，然后查看status：
+
+```
+lincoln@ubuntu:~/learngit$ git commit -m "update:管理修改1"
+[master 2d4e074] update:管理修改1
+ 1 file changed, 6 insertions(+)
+ lincoln@ubuntu:~/learngit$ git status
+位于分支 master
+您的分支领先 'origin/master' 共 1 个提交。
+  （使用 "git push" 来发布您的本地提交）
+
+尚未暂存以备提交的变更：
+  （使用 "git add <file>..." 更新要提交的内容）
+  （使用 "git checkout -- <file>..." 丢弃工作区的改动）
+
+    修改:         README.md
+
+修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+```
+
+显然，根据`git status`返回的信息，我们可以知道commit提交的并不是文件本身，而是已经add到暂存区的第一次修改。
+
+这时如果使用 `git diff HEAD` 命令就可以看到工作区和版本库里最新版本的区别。
+
+那么要怎样提交第二次修改呢？ 一种方法是再次add和commit。除此之外，还可以第一次修改add之后不要急着commit。 而是等到第二次修改也add了，两次修改后并后再commit。 总结一句就是，**每次修改如果不add到暂存区，就不会被commit**。
