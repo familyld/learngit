@@ -352,7 +352,7 @@ lincoln@ubuntu:~/learngit$ git commit -m "update:管理修改1"
 
 ###撤销修改
 
-如果我们在工作区做了修改，然后查看 `git status`，就会发现，Git除了会提示我们用add来暂存变更之外，还会提示我们可以用`git checkout 文件名.文件格式` 来撤销变更，丢弃工作区的修改，回到最近一次git add的状态。
+如果我们在工作区做了修改，然后查看 `git status`，就会发现，Git除了会提示我们用add来暂存变更之外，还会提示我们可以用 `git checkout 文件名.文件格式` 来撤销变更，丢弃工作区的修改，回到最近一次git add的状态。
 
 ```
 lincoln@ubuntu:~/Learning/learngit$ git status
@@ -380,4 +380,59 @@ lincoln@ubuntu:~/Learning/learngit$ git status
 ```
 
 注意！`git checkout -- file` 中的 `--`  很重要，没有这个就变成了切换分支的命令了，后面的分支管理会再提及到。
+
+然而，我们有时犯了傻，已经add到暂存区了，怎么办呢？
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git add *
+lincoln@ubuntu:~/Learning/learngit$ git status
+位于分支 master
+
+要提交的变更：
+  （使用 "git reset HEAD <file>..." 撤出暂存区）
+
+    修改:         README.md
+```
+
+可以看到Git提示了我们可以用 `git reset HEAD 文件名.文件类型` 的方式把最近一次add到暂存区的内容撤销掉。
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git reset HEAD README.md
+重置后撤出暂存区的变更：
+M   README.md
+lincoln@ubuntu:~/Learning/learngit$ git status
+位于分支 master
+
+尚未暂存以备提交的变更：
+  （使用 "git add <file>..." 更新要提交的内容）
+  （使用 "git checkout -- <file>..." 丢弃工作区的改动）
+
+    修改:         README.md
+
+修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+```
+
+撤销后就回到前面的状态了，这样我们又可以用 `git checkout 文件名.文件格式` 来把工作区的修改撤销了～～
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git checkout -- README.md
+lincoln@ubuntu:~/Learning/learngit$ git status
+位于分支 master
+您的分支领先 'origin/master' 共 1 个提交。
+  （使用 "git push" 来发布您的本地提交）
+
+无文件要提交，干净的工作区
+```
+
+重新得到干净的工作区，世界变清净了～～
+
+更进一步来说，如果你不但改错，还从暂存区提交到了版本库，怎么办呢？ 这时我们可以直接利用之前的知识，回退一个版本。不过，这是有条件的，就是你**还没有把自己的本地版本库推送到远程**。后面会继续讲到远程版本库的内容。如果把提交推送到了远程版本库，那就真的惨了……
+
+####小结
+
+场景1：改乱了工作区某个文件的内容，想直接丢弃工作区的修改时，用命令 `git checkout -- file`。
+
+场景2：不但改乱了工作区某个文件的内容，还添加到了暂存区时，想丢弃修改，分两步，第一步用命令 `git reset HEAD file`，就回到了场景1，第二步按场景1操作。
+
+场景3：已经提交了不合适的修改到版本库时，想要撤销本次提交，参考前面的版本回退一节，不过前提是没有推送到远程库。
 
