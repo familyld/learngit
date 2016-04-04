@@ -349,3 +349,35 @@ lincoln@ubuntu:~/learngit$ git commit -m "update:管理修改1"
 这时如果使用 `git diff HEAD` 命令就可以看到工作区和版本库里最新版本的区别。
 
 那么要怎样提交第二次修改呢？ 一种方法是再次add和commit。除此之外，还可以第一次修改add之后不要急着commit。 而是等到第二次修改也add了，两次修改后并后再commit。 总结一句就是，**每次修改如果不add到暂存区，就不会被commit**。
+
+###撤销修改
+
+如果我们在工作区做了修改，然后查看 `git status`，就会发现，Git除了会提示我们用add来暂存变更之外，还会提示我们可以用`git checkout 文件名.文件格式` 来撤销变更，丢弃工作区的修改，回到最近一次git add的状态。
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git status
+位于分支 master
+您的分支与上游分支 'origin/master' 一致。
+
+尚未暂存以备提交的变更：
+  （使用 "git add <file>..." 更新要提交的内容）
+  （使用 "git checkout -- <file>..." 丢弃工作区的改动）
+
+    修改:         README.md
+
+修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+```
+
+撤销修改的方法如下，可以看到撤销后再次查看 `git status` ，之前修改的内容已经撤回了，工作区是干净的。
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git checkout -- README.md
+lincoln@ubuntu:~/Learning/learngit$ git status
+位于分支 master
+您的分支与上游分支 'origin/master' 一致。
+
+无文件要提交，干净的工作区
+```
+
+注意！`git checkout -- file` 中的 `--`  很重要，没有这个就变成了切换分支的命令了，后面的分支管理会再提及到。
+
