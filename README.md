@@ -436,3 +436,53 @@ lincoln@ubuntu:~/Learning/learngit$ git status
 
 场景3：已经提交了不合适的修改到版本库时，想要撤销本次提交，参考前面的版本回退一节，不过前提是没有推送到远程库。
 
+###删除文件
+
+首先添加一个新文件test.txt到Git并且提交：
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git add test.txt
+lincoln@ubuntu:~/Learning/learngit$ git commit -m "add:新增test.txt 文件"
+[master 2e64ab8] add:新增test.txt文件
+ 1 file changed, 1 insertion(+)
+ create mode 100644 test.txt
+```
+
+如果不小心把test.txt文件删除掉了，比如：
+
+```
+lincoln@ubuntu:~/Learning/learngit$ rm test.txt 
+lincoln@ubuntu:~/Learning/learngit$ git status
+位于分支 master
+
+尚未暂存以备提交的变更：
+  （使用 "git add/rm <file>..." 更新要提交的内容）
+  （使用 "git checkout -- <file>..." 丢弃工作区的改动）
+
+    删除:         test.txt
+
+修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+```
+
+可以看到删除之后，Git会告诉我们工作区和版本库不一致，并且给了我们两个选择。 
+
+一是确实要从版本库中删除该文件，那就用命令 `git rm` 删掉，并且 `git commit`：
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git rm test.txt
+rm 'test.txt'
+lincoln@ubuntu:~/Learning/learngit$ git commit -m "remove:删除了test.txt文件"
+[master b996ce2] remove:删除了test.txt文件
+ 1 file changed, 1 deletion(-)
+ delete mode 100644 test.txt
+```
+
+这样一来，文件就从版本库中删除掉了。第二个选择就是恢复文件，万一我们删错了也不担心，因为文件在版本库中还有(如果用了一的方法就真没有了。。。)，我们可以很轻松地恢复文件：
+
+    lincoln@ubuntu:~/Learning/learngit$ git checkout -- test.txt
+
+####小结
+
+命令 `git rm` 用于删除一个文件。如果一个文件**已经被提交到版本库**，那么你永远不用担心误删，但是要小心，你**只能恢复文件到最新版本，你会丢失最近一次提交后你修改的内容**。
+
+##远程仓库
