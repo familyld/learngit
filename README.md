@@ -522,27 +522,5 @@ However～在GitHub上免费托管的Git仓库是任何人都可以看到的喔�
 
 配置好SSH和Github，我们就终于可以开始远程仓库的学习啦～自从有了远程仓库，我们再也不用担心硬盘不够用啦～
 
-***号外:***
 
-如果在公司一个github帐号，自己也有一个github帐号，怎样可以在电脑上同时配两个呢？
 
-注意ssh-keygen是可以选择key的名字的，只要第二个key不要用默认的名字`id_rsa`，自己换个别的，比如`mycompany_rsa`就可以了。在用户主目录下创建`.ssh/config`文件，不同的host用不同的key，参考：[网址1](http://stackoverflow.com/questions/7927750/specify-an-ssh-key-for-git-push-for-a-given-domain) 或者 [网址2](http://jingyan.todgo.com/shuma/2161775tdu.html)。
-
-###添加远程库
-
-在本地创建好一个Git仓库后，我们可以在GitHub也创建同名的Git仓库，并且让这两个仓库进行远程同步，这样，GitHub上的仓库既可以作为备份，又可以让其他人通过该仓库来协作了。
-
-在Github上创建仓库非常简单，在`Repositories`页面点击New按钮，填写信息(一般填写仓库名就可以了)后确认即可。这时，Github的仓库还是空的,GitHub告诉我们，可以从这个仓库克隆出新的仓库，也可以把一个已有的本地仓库与之关联，然后，把本地仓库的内容推送到GitHub仓库。如下图：
-
-![](http://www.liaoxuefeng.com/files/attachments/0013849084720379a3eae576b9f417da2add578c8612a2e000/0)
-
-我们可以首先吧本地仓库和远程仓库进行关联：
-
-    lincoln@ubuntu:~/Learning/learngit$ git remote add origin git@github.com:用户名/learngit.git
-    fatal: 远程 origin 已经存在。
-
-注意这个命令要在本地的learngit仓库下执行，用户名换成自己的即可。添加关联后，远程库的名字就是origin，这是Git默认的叫法，也**可以改成别的**，但是origin这个名字一看就知道是远程库。这里因为我之前已经添加过了，所以显示的是这个远程分支已存在。接下来就可以把本地库的内容推送到远程库上了。
-
-```
-
-```
