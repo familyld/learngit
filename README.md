@@ -544,6 +544,47 @@ However～在GitHub上免费托管的Git仓库是任何人都可以看到的喔�
 注意这个命令要在本地的learngit仓库下执行，用户名换成自己的即可。添加关联后，远程库的名字就是origin，这是Git默认的叫法，也**可以改成别的**，但是origin这个名字一看就知道是远程库。这里因为我之前已经添加过了，所以显示的是这个远程分支已存在。接下来就可以把本地库的内容推送到远程库上了。
 
 ```
-
+lincoln@ubuntu:~/Learning/learngit$ git commit -m "update:添加远程仓库1"[master 56a890c] update:添加远程仓库1
+ 1 file changed, 17 insertions(+)
+lincoln@ubuntu:~/Learning/learngit$ git push -u origin master
+Counting objects: 14, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (12/12), done.
+Writing objects: 100% (12/12), 4.05 KiB | 0 bytes/s, done.
+Total 12 (delta 4), reused 0 (delta 0)
+To git@github.com:familyld/learngit.git
+   1e05900..56a890c  master -> master
+分支 master 设置为跟踪来自 origin 的远程分支 master。
 ```
 
+用`git push`命令，可以把本地库的内容推送到远程，实际上是**把本地的master分支推送到远程**。
+
+当我们第一次推送master分支时，加上`-u`参数，Git不但会把本地的master分支内容推送的远程新的master分支，还会**把本地的master分支和远程的master分支关联起来**，在以后的推送或者拉取时就可以直接使用`git push origin master`或者` git pull origin master`了。
+
+####SSH警告
+
+第一次使用Git的clone或者push命令连接GitHub时，会得到一个警告：
+
+```
+The authenticity of host 'github.com (xx.xx.xx.xx)' can't be established.
+RSA key fingerprint is xx.xx.xx.xx.xx.
+Are you sure you want to continue connecting (yes/no)?
+```
+
+这是因为Git使用SSH连接，而SSH连接在第一次验证GitHub服务器的Key时，需要确认GitHub的Key的指纹信息是否真的来自GitHub的服务器，输入yes回车即可。然后Git会输出一个警告，告诉你已经把GitHub的Key添加到本机的一个信任列表里了：
+
+    Warning: Permanently added 'github.com' (RSA) to the list of known hosts.
+
+这个警告只会出现一次，后面的操作就不会有任何警告了。如果实在担心有人冒充GitHub服务器，输入yes前可以对照GitHub的RSA Key的指纹信息是否与SSH连接给出的一致。
+
+####小结
+
+要关联一个远程库，使用命令`git remote add origin git@server-name:path/repo-name.git`；
+
+关联后，使用命令`git push -u origin master`进行master分支的第一次推送；
+
+此后，每次本地提交后就可以直接使用命令`git push origin master`推送最新的修改了；
+
+分布式版本系统的最大好处之一是**在本地工作完全不需要考虑远程库的存在**，也就是没有联网也能正常工作，而SVN在没有联网的时候是拒绝干活的！这样我们只要在有网络的时候把本地提交推送到远程库就完成同步了。
+
+###从远程库克隆
