@@ -522,5 +522,11 @@ However～在GitHub上免费托管的Git仓库是任何人都可以看到的喔�
 
 配置好SSH和Github，我们就终于可以开始远程仓库的学习啦～自从有了远程仓库，我们再也不用担心硬盘不够用啦～
 
+***号外:***
+
+如果在公司一个github帐号，自己也有一个github帐号，怎样可以在电脑上同时配两个呢？
+
+注意ssh-keygen是可以选择key的名字的，只要第二个key不要用默认的名字`id_rsa`，自己换个别的，比如`mycompany_rsa`就可以了。在用户主目录下创建`.ssh/config`文件，不同的host用不同的key，参考：[网址1](http://stackoverflow.com/questions/7927750/specify-an-ssh-key-for-git-push-for-a-given-domain) 或者 [网址2](http://jingyan.todgo.com/shuma/2161775tdu.html)。
+
 
 
