@@ -645,3 +645,72 @@ Are you sure you want to continue connecting (yes/no)?
 
 接下来实践一下：
 
+```
+lincoln@ubuntu:~/Learning/learngit$ git checkout -b dev
+M README.md
+切换到一个新分支 'dev'
+lincoln@ubuntu:~/Learning/learngit$ git branch
+* dev
+  master
+```
+
+首先创建分支dev并切换到分支dev，我们可以使用上面的写法，用`checkout`命令加上`-b`参数表示创建并切换。这一条命令相当于下面两条：
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git branch dev
+lincoln@ubuntu:~/Learning/learngit$ git checkout dev
+切换到一个新分支 'dev'
+```
+
+然后我们可以使用`git branch`来查看当前分支的状况，可以看到分支dev前面有一个星号，这表示当前分支是dev。
+
+  ```
+lincoln@ubuntu:~/Learning/learngit$ git add README.md 
+lincoln@ubuntu:~/Learning/learngit$ git commit -m "update:创建与合并分支1"
+[dev 3fc6975] update:创建与合并分支1
+ 1 file changed, 37 insertions(+), 1 deletion(-)
+ ```
+
+接下来对工作去进行修改并提交到dev分支上去，知道我们完成了工作就切换回主分支，也即master分支：
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git checkout master
+切换到分支 'master'
+您的分支与上游分支 'origin/master' 一致。
+```
+
+但我们会发现切换回master分支后，我们之前在工作区上做的修改全都不见了。不用着急！这是因为master分支指向的还是之前的版本，我们只要把dev分支合并到master分支上，之前做的修改就回来了：
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git merge dev
+更新 9842117..3fc6975
+Fast-forward
+ README.md | 38 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 37 insertions(+), 1 deletion(-)
+ ```
+
+注意到合并是Git告诉我们合并的方式是Fast-forward，即快进模式，直接吧master指向dev的当前提交，所以速度很快。实际上不是每次合并都能Fast-forward的，后面会再讲到其他的方式。最后我们可以删除掉dev分支：
+
+ ```
+lincoln@ubuntu:~/Learning/learngit$ git branch -d dev
+已删除分支 dev（曾为 3fc6975）。
+lincoln@ubuntu:~/Learning/learngit$ git branch
+* master
+```
+
+####小结
+
+因为创建、合并和删除分支非常快，所以Git鼓励大家使用分支来完成某个任务，合并后再删掉分支，这和直接在master分支上工作效果是一样的，但`过程更安全`。
+
+查看分支：`git branch`
+
+创建分支：`git branch <name>`
+
+切换分支：`git checkout <name>`
+
+创建+切换分支：`git checkout -b <name>`
+
+合并某分支到当前分支：`git merge <name>`
+
+删除分支：`git branch -d <name>`
+
