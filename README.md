@@ -600,6 +600,7 @@ Are you sure you want to continue connecting (yes/no)?
 远程仓库的地址我们可以在Github打开对应仓库然后在URL后加上`.git`就可以了。除了使用https地址外，Github还支持原生git的`git clone git@github.com:用户名/仓库名.git`这样的地址，速度较https快一些。
 
 ##分支管理
+
 分支在实际中有什么用呢？假设你准备开发一个新功能，需要两周才能完成，第一周你写了50%的代码，如果立刻提交，由于代码没写完，不完整的代码库会导致无法运行程序，这样大家就都不能干活了。但如果我们等代码全部写完再一次提交，又存在丢失每天进度的巨大风险。
 
 现在有了分支，就不用怕了。我们可以创建了一个属于自己的分支，别人看不到，还继续在原来的分支上正常工作，而我们可以在自己的分支上干活，想提交就提交，直到**开发完毕后，再一次性合并到原来的分支上**，这样，既安全，又不影响别人工作。
@@ -609,3 +610,38 @@ Are you sure you want to continue connecting (yes/no)?
 但Git的分支是与众不同的，**无论创建、切换和删除分支，Git在1秒钟之内就能完成！无论你的版本库是1个文件还是1万个文件**。
 
 ###创建与合并分支
+
+从前面版本回退一节中我们已经知道，每次commit新版本，Git都会把新版本和以前的版本串成一条时间线，这条时间线就称为一个**分支**。 到目前为止，我们都只是用了**主分支**，也即**master分支**。
+
+前面我们讲到`HEAD`指针指向当前的版本(最新commit)，**实际上HEAD指向的是当前分支**，我们使用master分支时，`HEAD`指向的就是master，然后master指向的才是当前的版本，如图：
+
+![](http://www.liaoxuefeng.com/files/attachments/0013849087937492135fbf4bbd24dfcbc18349a8a59d36d000/0)
+
+可以看下面这个短视频来理解，每次commit之后，master分支都会向前移动一步，指向新的版本。
+
+<video id="video" controls="" preload="yes">
+      <source  src="http://michaelliao.gitcafe.io/video/master-branch-forward.mp4" type="video/mp4">
+</video>
+
+当我们创建一个新的分支时，比如叫做dev分支，Git做的事情非常简单，就是创建了一个指针dev，然后指向mater当前指向的那个版本，然后把`HEAD`指针改为指向dev分支。工作区本身是没有任何变化的，所以创建分支的速度是很快的。
+
+![](http://www.liaoxuefeng.com/files/attachments/001384908811773187a597e2d844eefb11f5cf5d56135ca000/0)
+
+这时，我们再修改工作区并提交修改，针对的就是dev这个分支了，下图表示的是新提交一次的情形，这是master分支不动，dev分支往前移，指向我们最新一次的提交。
+
+![](http://www.liaoxuefeng.com/files/attachments/0013849088235627813efe7649b4f008900e5365bb72323000/0)
+
+假设我们在dev上的工作完成了，就可以把dev分支合并到master上。实现也很简单，只需要直接**把master指向dev当前指向的版本**就可以了。
+
+![](http://www.liaoxuefeng.com/files/attachments/00138490883510324231a837e5d4aee844d3e4692ba50f5000/0)
+
+所以在Git中合并分支也是非常快的，只是改一改指针，工作区不变化。合并完分支后，甚至可以删除dev分支，这样不会对工作区有任何影响。删除dev分支仅仅是把dev指针给删掉，删掉后，我们就只剩下了一条master分支了。
+
+可以看下面的小视频了解从创建分支到合并分支和删除分支的整个过程：
+
+<video id="video" controls="" preload="yes">
+      <source  src="http://github.liaoxuefeng.com/sinaweibopy/video/master-and-dev-ff.mp4" type="video/mp4">
+</video>
+
+接下来实践一下：
+
