@@ -714,3 +714,7 @@ lincoln@ubuntu:~/Learning/learngit$ git branch
 
 删除分支：`git branch -d <name>`
 
+### 解决冲突
+
+这一小节主要将的是分支和主分支合并时产生冲突要如何处理：
+这是1
