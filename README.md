@@ -716,6 +716,108 @@ lincoln@ubuntu:~/Learning/learngit$ git branch
 
 ### 解决冲突
 
-这一小节主要将的是分支和主分支合并时产生冲突要如何处理：
+这一小节主要将的是分支和主分支合并时产生冲突要如何处理，首先创建一个新分支，然后修改文件内容，再在新分支中作出提交：
 
+```
+lincoln@ubuntu:~/Learning/learngit$ git checkout -b feature1
+M README.md
+切换到一个新分支 'feature1'
+lincoln@ubuntu:~/Learning/learngit$ git add README.md 
+lincoln@ubuntu:~/Learning/learngit$ git commit -m "update:冲突1"
+[feature1 c07f126] update:冲突1
+ 1 file changed, 4 insertions(+)
+```
 
+然后切换为master分支，这是文件内容会恢复为原来的样子，刚刚在feature1分支做的修改就不见了。我们在master分支也修改内容，然后同样进行提交：
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git checkout master
+切换到分支 'master'
+您的分支与上游分支 'origin/master' 一致。
+lincoln@ubuntu:~/Learning/learngit$ git add README.md 
+lincoln@ubuntu:~/Learning/learngit$ git commit -m "update:冲突2"
+[master 19fca4f] update:冲突2
+ 1 file changed, 1 insertion(+)
+```
+
+这时如果我们尝试吧feature1分支合并到master分支，会提示冲突，因为master分支中有着feature1分支没有的内容。
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git merge feature1
+自动合并 README.md
+冲突（内容）：合并冲突于 README.md
+自动合并失败，修正冲突然后提交修正的结果。
+lincoln@ubuntu:~/Learning/learngit$ git status
+位于分支 master
+您的分支领先 'origin/master' 共 1 个提交。
+  （使用 "git push" 来发布您的本地提交）
+
+您有尚未合并的路径。
+  （解决冲突并运行 "git commit"）
+
+未合并的路径：
+  （使用 "git add <file>..." 标记解决方案）
+
+  双方修改：     README.md
+
+修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+```
+
+如果画个图出来，这是的时间线是这样的：
+
+![](http://www.liaoxuefeng.com/files/attachments/001384909115478645b93e2b5ae4dc78da049a0d1704a41000/0)
+
+这种情况下，Git无法执行“快速合并”，只能试图把各自的修改合并起来，但这种合并就可能会有冲突，只能手动解决。如果我们查看此时的文件内容会发现Git对两个分支的修改做了标注，像下面这样：
+
+```
+Git is a distributed version control system.
+Git is free software distributed under the GPL.
+Git has a mutable index called stage.
+Git tracks changes of files.
+<<<<<<< HEAD
+Creating a new branch is quick & simple.
+=======
+Creating a new branch is quick AND simple.
+>>>>>>> feature1
+```
+
+`<<<<<<< HEAD` 表示的是master分支的修改，和下一分支的内容用 `=======` 分隔开，`>>>>>>> feature1` 就是我们在feature1分支做的修改。我们要手动把这两个修改合并后再提交就可以了。
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git add README.md 
+lincoln@ubuntu:~/Learning/learngit$ git commit -m "update:解决冲突"
+[master 35c430e] update:解决冲突
+```
+
+这时的时间先如下图：
+
+![](http://www.liaoxuefeng.com/files/attachments/00138490913052149c4b2cd9702422aa387ac024943921b000/0)
+
+可以借助 `git log --graph --pretty=oneline --abbrev-commit` 来直观地查看到分支的合并情况，这里可以看到星号表示的是提交新版本，可以看到在f66865a版本后创建了新的分支，并且在新的分支和master分支上都有提交，最终合并的到35c430e分支。
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git log --graph --pretty=oneline --abbrev-commit
+*   35c430e update:解决冲突
+|\  
+| * c07f126 update:冲突1
+* | 19fca4f update:冲突2
+|/  
+* f66865a update:创建与合并分支2
+* 3fc6975 update:创建与合并分支1
+...
+```
+
+最后，工作完成，可以删除feature1分支了～～
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git branch -d feature1
+已删除分支 feature1（曾为 c07f126）。
+```
+
+####小结
+
+当Git无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交，合并完成。
+
+用`git log --graph`命令可以看到分支合并图。
+
+###分支管理策略
