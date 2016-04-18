@@ -822,3 +822,4 @@ lincoln@ubuntu:~/Learning/learngit$ git branch -d feature1
 
 ###分支管理策略
 
+通常，合并分支时，如果可能，Git会用 `Fast forward` 模式，但这种模式下，删除分支后，会丢掉分支信息。
