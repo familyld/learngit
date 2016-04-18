@@ -821,3 +821,4 @@ lincoln@ubuntu:~/Learning/learngit$ git branch -d feature1
 用`git log --graph`命令可以看到分支合并图。
 
 ###分支管理策略
+
