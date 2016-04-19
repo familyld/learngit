@@ -822,4 +822,35 @@ lincoln@ubuntu:~/Learning/learngit$ git branch -d feature1
 
 ###分支管理策略
 
-通常，合并分支时，如果可能，Git会用 `Fast forward` 模式，但这种模式下，删除分支后，会丢掉分支信息。
+通常，合并分支时，如果可能，Git会用 `Fast forward` 模式，但这种模式下，删除分支后，会丢掉分支信息。如果
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git checkout -b dev
+切换到一个新分支 'dev'
+lincoln@ubuntu:~/Learning/learngit$ git add README.md 
+lincoln@ubuntu:~/Learning/learngit$ git commit -m "update:分支管理策略2"
+[dev 6a73e3f] update:分支管理策略2
+ 1 file changed, 1 insertion(+)
+ ```
+
+
+ 
+ ```
+lincoln@ubuntu:~/Learning/learngit$ git checkout master
+切换到分支 'master'
+您的分支领先 'origin/master' 共 1 个提交。
+  （使用 "git push" 来发布您的本地提交）
+lincoln@ubuntu:~/Learning/learngit$ git merge --no-ff -m "update:分支管理策略3- 禁止快速合并模式" dev
+Merge made by the 'recursive' strategy.
+ README.md | 1 +
+ 1 file changed, 1 insertion(+)
+lincoln@ubuntu:~/Learning/learngit$ git log --graph --pretty=online --abbrev-commit
+fatal: invalid --pretty format: online
+lincoln@ubuntu:~/Learning/learngit$ git log --graph --pretty=oneline --abbrev-commit
+*   baeeade update:分支管理策略3-禁止快速合并模式
+|\  
+| * 6a73e3f update:分支管理策略2
+|/  
+* d962bdf update:分支管理策略1
+...
+```
