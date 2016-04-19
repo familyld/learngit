@@ -822,7 +822,7 @@ lincoln@ubuntu:~/Learning/learngit$ git branch -d feature1
 
 ###分支管理策略
 
-通常，合并分支时，如果可能，Git会用 `Fast forward` 模式，但这种模式下，删除分支后，会丢掉分支信息。如果
+通常，合并分支时，如果可能，Git会用 `Fast forward` 模式，但这种模式下，删除分支后，会丢掉分支信息，注意这里说丢掉的意思是我们查看log的时候无法知道我们在哪里开始分支和在哪里做了合并，master的log里面没有任何的合并记录! 具体的下文会进行对比：
 
 ```
 lincoln@ubuntu:~/Learning/learngit$ git checkout -b dev
@@ -831,11 +831,11 @@ lincoln@ubuntu:~/Learning/learngit$ git add README.md
 lincoln@ubuntu:~/Learning/learngit$ git commit -m "update:分支管理策略2"
 [dev 6a73e3f] update:分支管理策略2
  1 file changed, 1 insertion(+)
- ```
+```
 
-
+首先还是新建一个分支dev，然后修改文件并提交。提交后回到master分支，这是我们选择使用 `git merge --no-ff -m "update:分支管理策略3- 禁止快速合并模式" dev` 来合并， `--no-ff` 参数指的就是**禁用快速合并模式**，因为**合并时会产生一个新的commit**，所以我们可以用 `-m` 参数来把commit的描述写进去：
  
- ```
+```
 lincoln@ubuntu:~/Learning/learngit$ git checkout master
 切换到分支 'master'
 您的分支领先 'origin/master' 共 1 个提交。
@@ -844,8 +844,11 @@ lincoln@ubuntu:~/Learning/learngit$ git merge --no-ff -m "update:分支管理策
 Merge made by the 'recursive' strategy.
  README.md | 1 +
  1 file changed, 1 insertion(+)
-lincoln@ubuntu:~/Learning/learngit$ git log --graph --pretty=online --abbrev-commit
-fatal: invalid --pretty format: online
+```
+
+然后我们可以通过 `git log` 查看分支历史，可以看到dev分支的信息被保留下来了，这个分支是从d962bdf版本新建的，然后在ba73e3f版本完成后和master分支进行了合并：
+
+```
 lincoln@ubuntu:~/Learning/learngit$ git log --graph --pretty=oneline --abbrev-commit
 *   baeeade update:分支管理策略3-禁止快速合并模式
 |\  
@@ -854,3 +857,82 @@ lincoln@ubuntu:~/Learning/learngit$ git log --graph --pretty=oneline --abbrev-co
 * d962bdf update:分支管理策略1
 ...
 ```
+
+再看看使用快速合并模式是怎样的，新建一个dev2分支，同样修改，提交，切换为master分支，然后合并：
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git checkout -b dev2
+M README.md
+切换到一个新分支 'dev2'
+lincoln@ubuntu:~/Learning/learngit$ git add *
+lincoln@ubuntu:~/Learning/learngit$ git commit -m "update:分支管理策略4"
+[dev2 0afa2cc] update:分支管理策略4
+ 1 file changed, 32 insertions(+), 1 deletion(-)
+lincoln@ubuntu:~/Learning/learngit$ git checkout master
+切换到分支 'master'
+您的分支领先 'origin/master' 共 3 个提交。
+  （使用 "git push" 来发布您的本地提交）
+lincoln@ubuntu:~/Learning/learngit$ git merge dev2
+更新 baeeade..0afa2cc
+Fast-forward
+ README.md | 33 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 32 insertions(+), 1 deletion(-)
+```
+
+查看合并后的git log，可以发现只有一条直线，也即只有master分支的信息，我们无法看到dev2分支是从哪个版本开始，又是从哪个版本和master进行合并的，**master的log里面没有任何的合并记录**!
+
+``` 
+lincoln@ubuntu:~/Learning/learngit$ git log --graph
+* commit 0afa2cc3ac186dd2491286f965f7f2d1afdcb422
+| Author: familyld <family_ld@foxmail.com>
+| Date:   Tue Apr 19 11:37:37 2016 +0800
+| 
+|     update:分支管理策略4
+|    
+*   commit baeeadefe03984e54feddc52631936c6bdaebbb6
+|\  Merge: d962bdf 6a73e3f
+| | Author: familyld <family_ld@foxmail.com>
+| | Date:   Mon Apr 18 22:13:32 2016 +0800
+| | 
+| |     update:分支管理策略3-禁止快速合并模式
+| |   
+| * commit 6a73e3f6421664f0984e198d9fc23985694493f2
+|/  Author: familyld <family_ld@foxmail.com>
+|   Date:   Mon Apr 18 22:12:30 2016 +0800
+...
+```
+
+设想一下如果你的master很重要, 而某一次合并后出现了问题, 但你用的是ff模式, master的log里面没有记录任何的分支信息，这样就**没有任何记录可以让你回退到分支合并前的版本**了! (回退只有靠commit id) **而如果我们很不幸地删除了分支，就既无法知道分支存在过，也无法区分哪些修改是在分支上提交的了**。
+
+不使用Fast forward模式的话，merge之后就长这样：
+
+![](http://www.liaoxuefeng.com/files/attachments/001384909222841acf964ec9e6a4629a35a7a30588281bb000/0)
+
+####小结
+
+在实际开发中，我们应该按照几个基本原则进行分支管理：
+
+首先，master分支应该是非常稳定的，也就是仅用来发布新版本，平时不能在上面干活；
+
+那在哪干活呢？干活都在dev分支上，也就是说，dev分支是不稳定的，到某个时候，比如1.0版本测试好，要发布了， 就把dev分支合并到master上，在master分支发布1.0版本；
+
+你和你的小伙伴们每个人都在dev分支上干活，每个人都有自己的分支，时不时地往dev分支上合并就可以了。
+
+所以，团队合作的分支看起来就像这样：
+
+![](http://www.liaoxuefeng.com/files/attachments/001384909239390d355eb07d9d64305b6322aaf4edac1e3000/0)
+
+合并分支时，加上--no-ff参数就可以用普通模式合并，合并后的历史有分支，能看出来曾经做过合并，而fast forward合并就看不出来曾经做过合并。
+
+最后，如果想要查看本地都有什么分支，可以使用`git branch -a`命令：
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git branch -a
+  dev
+  dev2
+* master
+  remotes/origin/master
+```
+
+###Bug分支
+
