@@ -936,3 +936,120 @@ lincoln@ubuntu:~/Learning/learngit$ git branch -a
 
 ###Bug分支
 
+在软件开发中，很容易会出现bug。有了bug就需要修复，在Git中，由于分支是如此的强大，所以，每个bug都可以通过一个新的临时分支来修复，修复后，合并分支，将临时分支删除就可以了。
+
+设想一个情景，当你突然接到一个修复代号101的bug的任务时，很自然地，你想创建一个分支issue-101来修复它，但是你现在正在dev上进行的工作还至少要一天的时间才能完成，所以无法进行提交，而bug要求在两个小时内进行修补，这要怎么办呢？
+
+幸好，Git为我们提供了`stash`功能，可以把当前工作现场“储藏”起来，等以后恢复现场就能继续工作了。
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git status
+位于分支 dev
+尚未暂存以备提交的变更：
+  （使用 "git add <file>..." 更新要提交的内容）
+  （使用 "git checkout -- <file>..." 丢弃工作区的改动）
+
+  修改:         README.md
+```
+
+如上，我们在dev分支上做了些修改，但是没有做完，所以还不能提交。如果这是我们要到别的分支修复bug，可以先用`git stash`保存工作现场：
+
+```
+修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+lincoln@ubuntu:~/Learning/learngit$ git stash
+Saved working directory and index state WIP on dev: addeb12 update:分支管理策略5
+HEAD 现在位于 addeb12 update:分支管理策略5
+lincoln@ubuntu:~/Learning/learngit$ git status
+位于分支 dev
+无文件要提交，干净的工作区
+```
+
+可以看到保存工作现场后，这时的工作区是干净的，我们可以放心地创建分支来修复bug。
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git checkout master
+切换到分支 'master'
+您的分支与上游分支 'origin/master' 一致。
+lincoln@ubuntu:~/Learning/learngit$ git checkout -b 'issue-101'
+切换到一个新分支 'issue-101'
+lincoln@ubuntu:~/Learning/learngit$ git add README.md 
+lincoln@ubuntu:~/Learning/learngit$ git commit -m "update:Bug分支1"
+[issue-101 4e307eb] update:Bug分支1
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+lincoln@ubuntu:~/Learning/learngit$ git checkout master
+切换到分支 'master'
+您的分支与上游分支 'origin/master' 一致。
+lincoln@ubuntu:~/Learning/learngit$ git merge --no-ff -m "update:Bug分支2" issue-101
+Merge made by the 'recursive' strategy.
+ README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+lincoln@ubuntu:~/Learning/learngit$ git branch -d issue-101
+已删除分支 issue-101（曾为 4e307eb）。
+```
+
+假设出bug的就是master分支，我们可以切换到master分支上，然后创建一个Bug分支，修复好了，再merge到maser分支上，Bug修复就完成了。
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git checkout dev
+切换到分支 'dev'
+lincoln@ubuntu:~/Learning/learngit$ git status
+位于分支 dev
+无文件要提交，干净的工作区
+lincoln@ubuntu:~/Learning/learngit$ git stash list
+stash@{0}: WIP on dev: addeb12 update:分支管理策略5
+lincoln@ubuntu:~/Learning/learngit$ git stash pop
+位于分支 dev
+尚未暂存以备提交的变更：
+  （使用 "git add <file>..." 更新要提交的内容）
+  （使用 "git checkout -- <file>..." 丢弃工作区的改动）
+
+  修改:         README.md
+
+修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+丢弃了 refs/stash@{0} (2becc9f4f9237bddb3207082ba3940b03261acc1)
+lincoln@ubuntu:~/Learning/learngit$ git stash list
+```
+
+这时切换回dev分支，我们可以恢复工作现场，继续之前的工作。有两种不同的方法可以实现，一是用`git stash apply stash号`(如这里可以用：`git stash apply stash@{0}`)恢复，但是恢复后，stash内容并不删除，你需要用`git stash drop`来删除；另一种方式是用`git stash pop`， 恢复的同时把stash内容也删了。通过`git stash list`可以看到保存的工作现场。
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git merge master
+更新 addeb12..bcc2122
+error: Your local changes to the following files would be overwritten by merge:
+  README.md
+Please, commit your changes or stash them before you can merge.
+Aborting
+lincoln@ubuntu:~/Learning/learngit$ git stash
+Saved working directory and index state WIP on dev: addeb12 update:分支管理策略5
+HEAD 现在位于 addeb12 update:分支管理策略5
+lincoln@ubuntu:~/Learning/learngit$ git status
+位于分支 dev
+无文件要提交，干净的工作区
+lincoln@ubuntu:~/Learning/learngit$ git merge master
+更新 addeb12..bcc2122
+Fast-forward
+ README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+lincoln@ubuntu:~/Learning/learngit$ git stash list
+stash@{0}: WIP on dev: addeb12 update:分支管理策略5
+lincoln@ubuntu:~/Learning/learngit$ git stash pop
+自动合并 README.md
+位于分支 dev
+尚未暂存以备提交的变更：
+  （使用 "git add <file>..." 更新要提交的内容）
+  （使用 "git checkout -- <file>..." 丢弃工作区的改动）
+
+  修改:         README.md
+
+修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+丢弃了 refs/stash@{0} (ca4b8b0f47248671af0fc3bb02ff60891178a2d0)
+lincoln@ubuntu:~/Learning/learngit$ git stash list
+```
+
+为了把在master上修复好的Bug同步到dev分支上，可以使用`git merge master`，注意merge的时候工作区必须是干净的，也即我们要在恢复工作现场之前merge，merge好了再恢复，这是我们就得到一个同步了Bug修复的工作现场了。
+
+####小结
+
+修复bug时，我们会通过创建新的bug分支进行修复，然后合并，最后删除；
+
+当手头工作没有完成时，先把工作现场`git stash`一下，然后去修复bug，修复后，再`git stash pop`，回到工作现场。123
