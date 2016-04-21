@@ -1058,3 +1058,48 @@ lincoln@ubuntu:~/Learning/learngit$ git stash list
 
 ###Feature分支
 
+在软件开发中，有时我们需要开发一个新的功能，因为新的功能需要测试等等，所以我们不会在主分支上进行开发，最好是新建一个feature分支，在feature分支上开发好了，再进行合并，最后删除feature分支。比如下面的例子，我们接到一个开发代号为ironman的新功能的要求：
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git checkout -b feature-ironman
+切换到一个新分支 'feature-ironman'
+lincoln@ubuntu:~/Learning/learngit$ git add README.md 
+lincoln@ubuntu:~/Learning/learngit$ git status
+位于分支 feature-ironman
+要提交的变更：
+  （使用 "git reset HEAD <file>..." 撤出暂存区）
+
+  修改:         README.md
+
+lincoln@ubuntu:~/Learning/learngit$ git commit -m "update:Feature分支1"
+[feature-ironman f1f55eb] update:Feature分支1
+ 1 file changed, 1 insertion(+)
+```
+
+和之前几节一样，创建分支，然后开发，提交。
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git checkout dev
+切换到分支 'dev'
+lincoln@ubuntu:~/Learning/learngit$ git branch -d feature-ironman 
+error: 分支 'feature-ironman' 没有完全合并。
+如果您确认要删除它，执行 'git branch -D feature-ironman'。
+```
+
+开发完成后，我们切到dev分支，合并然后交给测试的人做测试就可以了。然而，这时如果接到上级命令，经费不足，要取消掉新功能。 虽然你不甘心白干了，不过我们的新功能是无法合并了，要销毁feature分支。 这时就会发现之前的方法销毁失败，Git提示我们这个feature分支还没合并过，删除就什么都没有了。
+
+```
+lincoln@ubuntu:~/Learning/learngit$ git branch -D feature-ironman 
+已删除分支 feature-ironman（曾为 f1f55eb）。
+```
+
+按照提示，使用 `-D` 参数进行强行删除即可。
+
+####小结
+
+开发一个新feature，最好新建一个分支；
+
+如果要丢弃一个没有被合并过的分支，可以通过`git branch -D 分支名`强行删除。不删除倒也没啥后果，就是看起来比较乱，不过实际开发中，产品经理总是会该需求，所以备份一下不删除倒也是对的，只是命名一定要好，要能够看得懂。
+
+###多人协作
+
